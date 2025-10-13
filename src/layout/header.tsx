@@ -10,6 +10,9 @@ const CustomHeader = () => {
     // key: unique string (should be integer-like, e.g. '0' or '1')
     // label: string
     // href: string (route path) (should not have a trailing-slash, like '/news/'; '/news' is correct.)
+    { key: "0", label: "Home", href: "/" },
+    { key: "1", label: "News", href: "/news/index" },
+    { key: "2", label: "About", href: "/about" }
   ];
   // Don't touch this code, use it in your Menu component from Antd
   const router = useRouter();
@@ -25,7 +28,19 @@ const CustomHeader = () => {
 
   // Start editing here
 
-  return <Header style={{ display: "flex", alignItems: "center" }}></Header>;
+  return <Header style={{ display: "flex", alignItems: "center" }}>
+    <Menu
+      theme="dark"
+      mode="horizontal"
+      style={{ flex: 1, minWidth: 300 }}
+      selectedKeys={[selectedKey]}
+      onClick={handleClick}
+      items={menuItems.map((item) => ({
+        key: item.key,
+        label: item.label,
+      }))}
+    />
+  </Header>;
 };
 
 export default CustomHeader;
