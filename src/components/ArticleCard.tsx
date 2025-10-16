@@ -10,7 +10,9 @@ interface ArticleCardProps {
   article: Article;
 }
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => (
+const { Title, Paragraph, Text } = Typography;
+
+const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   /**
    * This component renders a single article. It takes as input an article object.
    * You should read the Antd documentation to figure out how to build this.
@@ -28,7 +30,86 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => (
    *
    * Don't forget that you need to add a unique key prop to each ArticleCard.
    */
-  <div>build me</div>
-);
+
+  const handleClick = () => {
+    window.open(article.url, "_blank");
+  };
+
+  const date = new Date(article.published_at).toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return(  
+    <Card
+      hoverable
+      onClick={handleClick}
+      title={
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingRight: 4,
+          }}
+        >
+          <Text strong ellipsis style={{ maxWidth: "100%", fontSize: 18}}>
+            {article.title}
+          </Text>
+          <Text
+            type="secondary"
+            style={{
+              fontSize: 16,
+              fontWeight: 400,
+              whiteSpace: "nowrap",
+              marginLeft: 8,
+              color: "#000000d9",
+            }}
+          >
+            {date}
+          </Text>
+        </div>
+      }
+      cover={<img
+        src={article.image_url}
+        alt={article.title}
+        onError={(e) => (e.currentTarget.src = image404.src)}
+        style={{
+          width: "100%",
+          borderTopLeftRadius: 7,
+          borderTopRightRadius: 7,
+          marginBottom: 18,
+        }}
+      />}
+      style={{
+        width: 480,
+        borderRadius: 7,
+      }}
+    >
+      <Title 
+        underline 
+        style={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center", 
+          paddingRight: 4, 
+          maxWidth: "100%", fontSize: 18,}}
+      >
+        {article.title}
+      </Title>
+      <Divider />
+      <Paragraph
+        style={{
+          color: "#000000d9",
+          marginBottom: 0
+        }}
+      >
+        {article.summary}
+      </Paragraph>
+    </Card>
+  )
+};
 
 export default ArticleCard;
