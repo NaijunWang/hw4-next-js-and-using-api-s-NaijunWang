@@ -1,8 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
 import { Divider, Typography } from "antd";
+import { Article, ArticleResponse } from "@/types/types";
 
 const NewsPage: React.FC = () => {
+  const [articles, setArticles] = useState<Article[]>([])
+  useEffect(() => {
+    async function getArticles(){
+      const res = await fetch("https://api.spaceflightnewsapi.net/v4/articles/?limit=10&offset=0&ordering=-published_at")
+      const data: ArticleResponse = await res.json();
+      setArticles(data.results);
+    }; 
+    getArticles();
+  }, [])
   return (
     <div style={{ width: "100%" }}>
       {/* You can delete this div if you want */}
@@ -13,6 +23,11 @@ const NewsPage: React.FC = () => {
       {/* Add pagination control using Antd(lookup the component). The same one should be used for both the table and grid views */}
       {/* It should be centered on the page */}
       {/* When you change the page, or the items per page, it should reset the scroll to the top of the page */}
+        <ul>
+          {articles.map((a) => (
+            <li key={a.id}>{a.title}</li>
+          ))}
+      </ul>
     </div>
   );
 };
