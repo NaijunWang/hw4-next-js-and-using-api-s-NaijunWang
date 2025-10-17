@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
-import { Divider, Typography, Switch } from "antd";
+import { Divider, Typography, Switch, Pagination } from "antd";
 import { Article, ArticleResponse } from "@/types/types";
 import ArticleList from "@/components/ArticleList";
 import ArticleTable from "@/components/ArticleTable";
@@ -9,15 +9,35 @@ const NewsPage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"grid"|"table">("grid");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalArticles, setTotalArticles] = useState(0);
+
+  async function getArticles(page = 1, size = 10) {
+    setLoading(true);
+    const offset = (page - 1) * size;
+    const res = await fetch(
+      `https://api.spaceflightnewsapi.net/v4/articles/?limit=${size}&offset=${offset}&ordering=-published_at`
+    );
+
+    const data: ArticleResponse = await res.json();
+    setArticles(data.results);
+    setTotalArticles(data.count);
+    setLoading(false);
+
+    window.scrollTo({ top: 0 });
+  }
+
   useEffect(() => {
-    async function getArticles(){
-      const res = await fetch("https://api.spaceflightnewsapi.net/v4/articles/?limit=10&offset=0&ordering=-published_at")
-      const data: ArticleResponse = await res.json();
-      setArticles(data.results);
-      setLoading(false);
-    }; 
-    getArticles();
-  }, [])
+    getArticles(currentPage, pageSize);
+  }, []);
+
+  const handlePageChange = (page: number, size?: number) => {
+    setCurrentPage(page);
+    if (size){setPageSize(size)};
+    getArticles(page, size || pageSize);
+  };
+
   return (
     <div style={{ width: "100%" }}>
       {/* Switch */}
@@ -43,6 +63,28 @@ const NewsPage: React.FC = () => {
       {/* Add pagination control using Antd(lookup the component). The same one should be used for both the table and grid views */}
       {/* It should be centered on the page */}
       {/* When you change the page, or the items per page, it should reset the scroll to the top of the page */}
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={totalArticles}
+          showSizeChanger
+          pageSizeOptions={[10, 20, 30, 40]}
+          onChange={handlePageChange}
+          onShowSizeChange={handlePageChange}
+          itemRender={(page, type, originalElement) => {
+            if (type === "page") {
+              return (
+                <span>
+                  {page}
+                </span>
+              );
+            }
+            return originalElement;
+           }
+         }
+        />
+      </div>
     </div>
   );
 };
