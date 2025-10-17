@@ -32,7 +32,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
    */
 
   const handleClick = () => {
-    window.open(article.url, "_blank");
+    window.location.href = article.url;
   };
 
   const date = new Date(article.published_at).toLocaleDateString("en-US", {
@@ -84,7 +84,6 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         }}
       />}
       style={{
-        width: 480,
         borderRadius: 7,
       }}
     >
