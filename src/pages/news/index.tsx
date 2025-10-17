@@ -4,6 +4,7 @@ import { Divider, Typography, Switch, Pagination } from "antd";
 import { Article, ArticleResponse } from "@/types/types";
 import ArticleList from "@/components/ArticleList";
 import ArticleTable from "@/components/ArticleTable";
+import ArticleStatistics from "@/components/ArticleStatistics";
 
 const NewsPage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([])
@@ -52,6 +53,7 @@ const NewsPage: React.FC = () => {
         <Typography.Text style={{ whiteSpace: "pre" }}>  (Switch between Table and Grid view)</Typography.Text>
       </div>
       {/* End of Switch */}
+      <ArticleStatistics articles={articles} />
       <Divider />
       <Typography.Title level={2}>Articles</Typography.Title>
       {view === "grid" ? (
@@ -72,17 +74,6 @@ const NewsPage: React.FC = () => {
           pageSizeOptions={[10, 20, 30, 40]}
           onChange={handlePageChange}
           onShowSizeChange={handlePageChange}
-          itemRender={(page, type, originalElement) => {
-            if (type === "page") {
-              return (
-                <span>
-                  {page}
-                </span>
-              );
-            }
-            return originalElement;
-           }
-         }
         />
       </div>
     </div>
